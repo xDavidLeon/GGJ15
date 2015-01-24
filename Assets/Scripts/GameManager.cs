@@ -12,7 +12,8 @@ public class GameManager : MonoBehaviour {
         cellContainer = new GameObject();
 		cellContainer.name = "Cells";
 
-        DrawFilledCircle();
+        DrawCircle(levelSize/2,levelSize/2,levelSize/2);
+        //DrawFilledCircle();
 	}
 	
 	void Update () {
@@ -30,7 +31,7 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    public void DrawCircle(int x0, int y0, int radius)
+    public void DrawCircle(int xStart, int yStart, int radius)
     {
         int x = radius;
         int y = 0;
@@ -38,11 +39,13 @@ public class GameManager : MonoBehaviour {
 
         while (x >= y)
         {
+            AddCubes(-x + xStart, x + xStart, y + yStart, 0);
 
-            AddCubes(-x + x0, x + x0, y + y0, 0);
-            AddCubes(-y + x0, y + x0, x + y0, 0);
-            AddCubes(-x + x0, x + x0, -y + y0, 0);
-            AddCubes(-y + x0, y + x0, -x + y0, 0);
+            AddCubes(-y + xStart, y + xStart, x + yStart, 0);
+
+            AddCubes(-x + xStart, x + xStart, -y + yStart, 0);
+
+            AddCubes(-y + xStart, y + xStart, -x + yStart, 0);
 
             y++;
             if (radiusError < 0)
@@ -59,26 +62,48 @@ public class GameManager : MonoBehaviour {
 
     public void DrawFilledCircle()
     {
-        float cx = (float)levelSize / 2.0f;
-        float cy = (float)levelSize / 2.0f;
-        float rad = (float)levelSize / 2.0f;
+        int x, y, px, nx, py, ny, d;
+        int r = levelSize/2;
+        int cx = levelSize/2;
+        int cy = levelSize/2;
 
-        for(int x=0;x<levelSize;x++)
-            for(int y=0;y<levelSize;y++) {
- 
-             float dx = x-cx, dy=y-cy;
-             float dist = Mathf.Sqrt(dx*dx+dy*dy);
+        for (x = 0; x <= r; x++)
+        {
+            d = (int)(Mathf.Sqrt(r * r - x * x));
+            for (y = 0; y <= d; y++)
+            {
+                px = cx + x;
+                nx = cx - x;
+                py = cy + y;
+                ny = cy - y;
 
-             if (dist < rad) AddCube(y, x, 0);
+                AddCube(px, py, 0);
+                AddCube(nx, py, 0);
+
+                AddCube(px, ny, 0);
+                AddCube(nx, ny, 0);
+
+                //tex.SetPixel(px, py, col);
+                //tex.SetPixel(nx, py, col);
+
+                //tex.SetPixel(px, ny, col);
+                //tex.SetPixel(nx, ny, col);
+
             }
+        } 
     }
 
     public void AddCube(int col, int row, int height)
     {
-        GameObject cell = GameObject.Instantiate(cellPrefab, new Vector3(col, height, row), Quaternion.identity) as GameObject;
+        GameObject cell = GameObject.Instantiate(cellPrefab, new Vector3(col + 0.5f, height+0.5f, row+0.5f), Quaternion.identity) as GameObject;
         cell.name = "Cell_" + row + "_" + col;
         cell.transform.parent = cellContainer.transform;
         cells[row, col] = cell.GetComponent<Cell>();
+    }
+
+    public void AddCube(float col, float row, float height)
+    {
+        AddCube((int)col, (int)row, (int)height);
     }
 
     public void AddCubes(int col0, int col1, int row, int height)

@@ -16,6 +16,7 @@ public class Cell : MonoBehaviour {
     public float timerObjective = 3.0f;
     public float timerNow = 0;
     public GameObject particlesDust;
+    public GameObject triggerDeath;
 
 	// Use this for initialization
 	void Start () 
@@ -96,6 +97,7 @@ public class Cell : MonoBehaviour {
         Vector3 targetPos = transform.position + new Vector3(0, 1.1f, 0);
         iTween.MoveTo(this.gameObject, targetPos, 2.0f);
         timerNow = 0;
+        triggerDeath.collider.enabled = false;
     }
 
     public void DangerLava()
@@ -119,8 +121,10 @@ public class Cell : MonoBehaviour {
         state = CELL_STATE.LAVA;
 
         Vector3 targetPos = transform.position - new Vector3(0,1,0);
-        iTween.MoveTo(this.gameObject, targetPos, 2.0f);
+        iTween.MoveTo(this.gameObject, targetPos, 1.0f);
         timerNow = 0;
+        triggerDeath.collider.enabled = true;
+
     }
 
     //public bool ActivateCell()

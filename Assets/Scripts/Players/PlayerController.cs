@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class PlayerController : MonoBehaviour {
@@ -98,7 +98,7 @@ public class PlayerController : MonoBehaviour {
             audio.PlayOneShot(sfx[Random.Range(0, sfx.Length)]);
         }
 
-        if (collision.gameObject.tag == "Lava")
+        if (collision.gameObject.tag == "Death")
         {
             if (glitchedMode) rb.AddForce(Vector3.up);
             else rb.AddForce(Vector3.up*500f);
@@ -110,8 +110,5 @@ public class PlayerController : MonoBehaviour {
         //{
         //    Debug.DrawRay(contact.point, contact.normal, Color.white);
         //}
-        
-
-
     }
 }

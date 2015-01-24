@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 public class GameManager : MonoSingleton<GameManager>{
+	public Texture2D mapLayout;
 	public int levelSize = 13;
 	private Cell[,] cells;
 	public GameObject cellPrefab;
@@ -15,6 +16,7 @@ public class GameManager : MonoSingleton<GameManager>{
         cellContainer = new GameObject();
 		cellContainer.name = "Cells";
 
+        DrawMapFromTexture();
         DrawCircle();
         //DrawFilledCircle();
 	}
@@ -23,6 +25,7 @@ public class GameManager : MonoSingleton<GameManager>{
 	    if(eventTimerNow >= eventTimer) // Do level events!
         {
             LavaTiles();
+            BoulderTiles();
             eventTimerNow = 0;
         }
         eventTimerNow += Time.deltaTime;
@@ -43,11 +46,25 @@ public class GameManager : MonoSingleton<GameManager>{
         }
     }
 
+    void BoulderTiles()
+    {
+        int n = Random.Range(1, 4);
+        int i = 0;
+        while (i < n)
+        {
+            // Get random cube
+            Cell c = GetFreeCell();
+            c.DangerBoulder();
+            // Apply Lava Event
+            i++;
+        }
+    }
+
     #endregion
 
     #region CUBE_MANAGEMENT
 
-    public void DrawSquare()
+    void DrawSquare()
     {
         for (int i = 0; i < levelSize; i++)
         {
@@ -58,7 +75,7 @@ public class GameManager : MonoSingleton<GameManager>{
         }
     }
 
-    public void DrawCircle()
+    void DrawCircle()
     {
         for(int x=0;x<levelSize;x++)
            for(int y=0;y<levelSize;y++) {
@@ -106,9 +123,10 @@ public class GameManager : MonoSingleton<GameManager>{
 
     public void AddCube(int col, int row, int height)
     {
-        GameObject cell = GameObject.Instantiate(cellPrefab, new Vector3(col + 0.5f, height-0.5f, row+0.5f), Quaternion.identity) as GameObject;
+        GameObject cell = GameObject.Instantiate(cellPrefab, new Vector3(col + 0.5f, height, row+0.5f), Quaternion.identity) as GameObject;
         cell.name = "Cell_" + row + "_" + col;
         cell.transform.parent = cellContainer.transform;
+        cell.transform.Rotate(0,90*Random.Range(0,10),0);
         cells[row, col] = cell.GetComponent<Cell>();
     }
 
@@ -135,7 +153,7 @@ public class GameManager : MonoSingleton<GameManager>{
         return cells[(int)pos.x, (int)pos.y];
     }
 
-    Cell GetFreeCell()
+    Cell GetFreeCell(bool stateNormal = true)
     {
         Cell c = null;
         while (c == null)
@@ -143,6 +161,7 @@ public class GameManager : MonoSingleton<GameManager>{
             int row = Random.Range(0, levelSize);
             int col = Random.Range(0, levelSize);
             c = GetCell(row, col);
+            if (c != null && c.state != Cell.CELL_STATE.NORMAL) c = null;
         }
         return c;
     }

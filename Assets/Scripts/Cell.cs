@@ -17,14 +17,13 @@ public class Cell : MonoBehaviour {
     public float timerNow = 0;
     public GameObject particlesDust;
     public GameObject triggerDeath;
+    public GameObject prefabBoulder;
 
-	// Use this for initialization
 	void Start () 
 	{
 	
 	}
 	
-	// Update is called once per frame
 	void Update () 
 	{
         switch(state)
@@ -43,44 +42,16 @@ public class Cell : MonoBehaviour {
                 if (timerNow >= timerObjective)
                     Lava();
                 break;
+            case CELL_STATE.DANGER_BOULDER:
+                if (timerNow >= timerObjective)
+                    Boulder();
+                break;
+            case CELL_STATE.BOULDER:
+                break;
         }
 
         timerNow += Time.deltaTime;
 	}
-
-	void OnCollisionEnter(Collision c)
-	{
-	}
-
-//	public void Step(Level.TEAM team)
-//	{
-//		if (isActivated) return;
-//		cellTeam = team;
-//		Color c = Color.white;
-//		switch (team)
-//		{
-//		case Level.TEAM.BLUE:
-//			c = new Color(0.0f/255.0f,76.0f/255.0f,133.0f/255.0f);
-//			renderer.material.SetColor("_DetailColor", c);
-//			particleSystem.startColor = c;
-//			break;
-//		case Level.TEAM.GREEN:
-//			c = new Color(39.0f/255.0f,105.0f/255.0f,22.0f/255.0f);
-//			renderer.material.SetColor("_DetailColor", c);
-//			particleSystem.startColor = c;
-//			break;
-//		case Level.TEAM.RED:
-//			c = new Color(98.0f/255.0f,14.0f/255.0f,10.0f/255.0f);
-//			renderer.material.SetColor("_DetailColor", c);
-//			particleSystem.startColor = c;
-//			break;
-//		case Level.TEAM.YELLOW:
-//			c = new Color(128.0f/255.0f,115.0f/255.0f,44.0f/255.0f);
-//			renderer.material.SetColor("_DetailColor", c);
-//			particleSystem.startColor = c;
-//			break;
-//		}
-//	}
 
 	public void Clear()
 	{
@@ -103,51 +74,44 @@ public class Cell : MonoBehaviour {
     public void DangerLava()
     {
         if (state == CELL_STATE.DANGER_LAVA) return;
-        GameObject.Instantiate(particlesDust, transform.position + new Vector3(0, 0.5f, 0), particlesDust.transform.rotation);
+        state = CELL_STATE.DANGER_LAVA;
+        timerNow = 0;
+
+        //GameObject.Instantiate(particlesDust, transform.position + new Vector3(0, 0.5f, 0), particlesDust.transform.rotation);
         Vector3 targetPos = transform.position - new Vector3(0, 0.1f, 0);
         iTween.MoveTo(this.gameObject, targetPos, 1.0f);
 
-        iTween.ShakeRotation(this.gameObject, new Vector3(2,0,2), timerObjective);
+        iTween.ShakeRotation(this.gameObject, new Vector3(4,8,4), timerObjective*2);
         //iTween.ShakePosition(this.gameObject, new Vector3(0.015f, 0, 0.015f), timerObjective);
+    }
 
-        state = CELL_STATE.DANGER_LAVA;
-        //renderer.material.SetColor("_DetailColor", Color.red);
+    public void DangerBoulder()
+    {
+        if (state == CELL_STATE.DANGER_BOULDER) return;
+        state = CELL_STATE.DANGER_BOULDER;
         timerNow = 0;
+
+        GameObject boulder = GameObject.Instantiate(prefabBoulder, transform.position + new Vector3(0, 20, 0), prefabBoulder.transform.rotation) as GameObject;
+        boulder.transform.Rotate(0, 90 * Random.Range(0, 10), 0);
     }
 
     public void Lava()
     {
         if (state == CELL_STATE.LAVA) return;
         state = CELL_STATE.LAVA;
+        timerNow = 0;
 
         Vector3 targetPos = transform.position - new Vector3(0,1,0);
-        iTween.MoveTo(this.gameObject, targetPos, 1.0f);
-        timerNow = 0;
+        iTween.MoveTo(this.gameObject, targetPos, timerObjective);
         triggerDeath.collider.enabled = true;
-
     }
 
-    //public bool ActivateCell()
-    //{
-    //    if (isActivated) return false;
-    //    particleSystem.Play();
-    //    life = maxLife;
-    //    if (HasPlayerOnTop()) return false;
-    //    isActivated = true;
-    //    Vector3 targetPos = transform.position;
-    //    targetPos.y = 0.5f;
-    //    iTween.MoveTo (this.gameObject, targetPos , 2.0f);
-    //    return true;
-    //}
-
-    //public void GetHit()
-    //{
-    //    life -= 1;
-    //    if (life <= 0)
-    //    {
-    //        Restart(false);
-    //    }
-    //}
+    public void Boulder()
+    {
+        if (state == CELL_STATE.BOULDER) return;
+        state = CELL_STATE.BOULDER;
+        timerNow = 0;
+    }
 
 	public bool HasPlayerOnTop()
 	{
@@ -174,21 +138,4 @@ public class Cell : MonoBehaviour {
 	{
 		return new Vector2((int)transform.position.z,(int)transform.position.x);
 	}
-
-//    public void Restart(bool restartColor)
-//    {
-//        if (isActivated) 
-//        {
-//            particleSystem.Stop();
-//            Vector3 targetPos = transform.position;
-//            targetPos.y = -0.5f;
-//            iTween.MoveTo(this.gameObject,targetPos,0.25f);
-//        }
-//        if (restartColor)
-//        {
-////			cellTeam = Level.TEAM.NONE;
-//            renderer.material.SetColor("_DetailColor", Color.white);
-//        }
-//        isActivated = false;
-//    }
 }

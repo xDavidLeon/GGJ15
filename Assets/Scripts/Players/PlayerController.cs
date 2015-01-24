@@ -107,8 +107,6 @@ public class PlayerController : MonoBehaviour {
         float h = Input.GetAxis("Horizontal01");
         float v = Input.GetAxis("Vertical01");
 
-        Debug.Log(h);
-
         rb.AddForce(Vector3.right * speedFactor * stunFactorNow * h);
         rb.AddForce(Vector3.forward * speedFactor * stunFactorNow * v);
 

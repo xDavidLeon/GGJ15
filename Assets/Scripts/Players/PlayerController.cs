@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class PlayerController : MonoBehaviour {
@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour {
     float stunFactorNow = 1.0f;
 
     public bool glitchedMode = false;
+    public AudioClip[] sfx;
 
 	// Use this for initialization
 	void Start () 
@@ -78,6 +79,8 @@ public class PlayerController : MonoBehaviour {
             Debug.Log("BOING!");
             bounceStunTimer = bounceStunTime;
             stunFactorNow = stunFactor;
+
+            audio.PlayOneShot(sfx[Random.Range(0, sfx.Length)]);
         }
 
         //foreach (ContactPoint contact in collision.contacts)

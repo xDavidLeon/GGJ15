@@ -57,7 +57,7 @@ public class PlayerController : MonoBehaviour {
         }
 
 
-        Debug.Log(rb.angularVelocity.magnitude);
+        //Debug.Log(rb.angularVelocity.magnitude);
 
         //Por si te caes
         if (transform.position.y < -1f)
@@ -76,11 +76,18 @@ public class PlayerController : MonoBehaviour {
             if(glitchedMode) rb.AddForce(collision.contacts[0].normal*(bounceForce+speed*100f));
             else rb.AddForce(collision.contacts[0].normal * (bounceForce + Mathf.Clamp(speed, 0f, 7f)));
 
-            Debug.Log("BOING!");
+            //Debug.Log("BOING!");
             bounceStunTimer = bounceStunTime;
             stunFactorNow = stunFactor;
 
             audio.PlayOneShot(sfx[Random.Range(0, sfx.Length)]);
+        }
+
+        if (collision.gameObject.tag == "Lava")
+        {
+            if (glitchedMode) rb.AddForce(Vector3.up);
+            else rb.AddForce(Vector3.up*500f);
+            Debug.Log("DEATH!");
         }
 
         //foreach (ContactPoint contact in collision.contacts)

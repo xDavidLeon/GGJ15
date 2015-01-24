@@ -8,7 +8,8 @@ public class Cell : MonoBehaviour {
         LAVA,
         BOULDER,
         DANGER_LAVA,
-        DANGER_BOULDER
+        DANGER_BOULDER,
+        RESTORING
     };
 
     public CELL_STATE state = CELL_STATE.NORMAL;
@@ -28,19 +29,21 @@ public class Cell : MonoBehaviour {
         {
             case CELL_STATE.NORMAL:
                 break;
+            case CELL_STATE.RESTORING:
+                if (timerNow >= timerObjective)
+                    Clear();
+                break;
             case CELL_STATE.LAVA:
                 if (timerNow >= timerObjective)
-                {
                     UndoLava();
-                    timerNow = 0;
-                }
                 break;
             case CELL_STATE.DANGER_LAVA:
+                if (timerNow >= timerObjective)
+                    Lava();
                 break;
         }
 
         timerNow += Time.deltaTime;
-
 	}
 
 	void OnCollisionEnter(Collision c)
@@ -82,13 +85,24 @@ public class Cell : MonoBehaviour {
 		if (state == CELL_STATE.NORMAL) return;
         state = CELL_STATE.NORMAL;
 		renderer.material.SetColor("_DetailColor", Color.white);
+        timerNow = 0;
 	}
 
     public void UndoLava()
     {
         Clear();
+        state = CELL_STATE.RESTORING;
         Vector3 targetPos = transform.position + new Vector3(0, 1, 0);
         iTween.MoveTo(this.gameObject, targetPos, 2.0f);
+        timerNow = 0;
+    }
+
+    public void DangerLava()
+    {
+        if (state == CELL_STATE.DANGER_LAVA) return;
+        state = CELL_STATE.DANGER_LAVA;
+        renderer.material.SetColor("_DetailColor", Color.red);
+        timerNow = 0;
     }
 
     public void Lava()
@@ -96,10 +110,9 @@ public class Cell : MonoBehaviour {
         if (state == CELL_STATE.LAVA) return;
         state = CELL_STATE.LAVA;
 
-        timerNow = 0;
-
         Vector3 targetPos = transform.position - new Vector3(0,1,0);
         iTween.MoveTo(this.gameObject, targetPos, 2.0f);
+        timerNow = 0;
     }
 
     //public bool ActivateCell()

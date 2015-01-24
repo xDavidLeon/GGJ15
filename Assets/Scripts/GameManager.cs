@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour {
         cellContainer = new GameObject();
 		cellContainer.name = "Cells";
 
-        DrawCircle(levelSize/2,levelSize/2,levelSize/2);
+        DrawCircle();
         //DrawFilledCircle();
 	}
 	
@@ -37,7 +37,7 @@ public class GameManager : MonoBehaviour {
         {
             // Get random cube
             Cell c = GetFreeCell();
-            c.Lava();
+            c.DangerLava();
             // Apply Lava Event
             i++;
         }
@@ -58,33 +58,17 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    public void DrawCircle(int xStart, int yStart, int radius)
+    public void DrawCircle()
     {
-        int x = radius;
-        int y = 0;
-        int radiusError = 1 - x;
+        for(int x=0;x<levelSize;x++)
+           for(int y=0;y<levelSize;y++) {
+ 
+             float dx = x-levelSize/2.0f, dy=y-levelSize/2.0f;
+             float dist = Mathf.Sqrt(dx*dx+dy*dy);
 
-        while (x >= y)
-        {
-            AddCubes(-x + xStart, x + xStart, y + yStart, 0);
-
-            AddCubes(-y + xStart, y + xStart, x + yStart, 0);
-
-            AddCubes(-x + xStart, x + xStart, -y + yStart, 0);
-
-            AddCubes(-y + xStart, y + xStart, -x + yStart, 0);
-
-            y++;
-            if (radiusError < 0)
-            {
-                radiusError += 2 * y + 1;
-            }
-            else
-            {
-                x--;
-                radiusError += 2 * (y - x + 1);
-            }
-        }
+             if (dist < levelSize / 2.0f) AddCube(x, y, 0);
+             // or  if(dx*dx+dy*dy<rad*rad)
+           }
     }
 
     public void DrawFilledCircle()

@@ -2,33 +2,33 @@ using UnityEngine;
 using System.Collections;
 
 public class GameManager : MonoBehaviour {
-	public int levelRows = 10;
-	public int levelCols = 10;
+	public int levelSize = 13;
 	private Cell[,] cells;
 	public GameObject cellPrefab;
-	// Use this for initialization
-	void Start () {
-		cells = new Cell[levelRows,levelCols];
-		GameObject cellContainer = new GameObject();
-		cellContainer.name = "Cells";
-        //for (int i = 0; i < levelRows; i++)
-        //{
-        //    for (int j = 0; j < levelCols; j++)
-        //    {
-        //        GameObject c = GameObject.Instantiate(cellPrefab, new Vector3(j + 0.5f,-0.5f,i+0.5f),Quaternion.identity) as GameObject;
-        //        c.name = "Cell " + i + "," + j;
-        //        c.transform.parent = cellContainer.transform;
-        //        cells[i,j] = c.GetComponent<Cell>();
-        //    }
-        //}
+    GameObject cellContainer;
 
-        DrawCircle(0, 0, 13);
+	void Start () {
+        cells = new Cell[levelSize, levelSize];
+        cellContainer = new GameObject();
+		cellContainer.name = "Cells";
+
+        DrawFilledCircle();
 	}
 	
-	// Update is called once per frame
 	void Update () {
 	
 	}
+
+    public void DrawSquare()
+    {
+        for (int i = 0; i < levelSize; i++)
+        {
+            for (int j = 0; j < levelSize; j++)
+            {
+                AddCube(j, 0, i);
+            }
+        }
+    }
 
     public void DrawCircle(int x0, int y0, int radius)
     {
@@ -38,14 +38,12 @@ public class GameManager : MonoBehaviour {
 
         while (x >= y)
         {
-            AddCube(x + x0, 0, y + y0);
-            AddCube(y + x0, 0, x + y0);
-            AddCube(-x + x0, 0, y + y0);
-            AddCube(-y + x0, 0, x + y0);
-            AddCube(-x + x0, 0, -y + y0);
-            AddCube(-y + x0, 0, -x + y0);
-            AddCube(x + x0, 0, -y + y0);
-            AddCube(y + x0, 0, -x + y0);
+
+            AddCubes(-x + x0, x + x0, y + y0, 0);
+            AddCubes(-y + x0, y + x0, x + y0, 0);
+            AddCubes(-x + x0, x + x0, -y + y0, 0);
+            AddCubes(-y + x0, y + x0, -x + y0, 0);
+
             y++;
             if (radiusError < 0)
             {
@@ -59,8 +57,35 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    public void AddCube(int x, int y, int z)
+    public void DrawFilledCircle()
     {
-        GameObject.Instantiate(cellPrefab, new Vector3(x, y, z), Quaternion.identity);
+        float cx = (float)levelSize / 2.0f;
+        float cy = (float)levelSize / 2.0f;
+        float rad = (float)levelSize / 2.0f;
+
+        for(int x=0;x<levelSize;x++)
+            for(int y=0;y<levelSize;y++) {
+ 
+             float dx = x-cx, dy=y-cy;
+             float dist = Mathf.Sqrt(dx*dx+dy*dy);
+
+             if (dist < rad) AddCube(y, x, 0);
+            }
+    }
+
+    public void AddCube(int col, int row, int height)
+    {
+        GameObject cell = GameObject.Instantiate(cellPrefab, new Vector3(col, height, row), Quaternion.identity) as GameObject;
+        cell.name = "Cell_" + row + "_" + col;
+        cell.transform.parent = cellContainer.transform;
+        cells[row, col] = cell.GetComponent<Cell>();
+    }
+
+    public void AddCubes(int col0, int col1, int row, int height)
+    {
+        for (int i = col0; i < col1; i++)
+        {
+            AddCube(i, row, height);
+        }
     }
 }

@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class GameManager : MonoBehaviour {
+public class GameManager : MonoSingleton<GameManager>{
 	public int levelSize = 13;
 	private Cell[,] cells;
 	public GameObject cellPrefab;

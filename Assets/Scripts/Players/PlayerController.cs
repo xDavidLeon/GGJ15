@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 
 public class PlayerController : MonoBehaviour {
@@ -21,6 +21,7 @@ public class PlayerController : MonoBehaviour {
     public float stunFactor;
     float stunFactorNow = 1.0f;
     public float dieTime, dieTimer = -1f;
+    public float respawnTime, respawnTimer = -1f;
 
     public bool glitchedMode = false;
     public AudioClip[] sfx;
@@ -37,13 +38,29 @@ public class PlayerController : MonoBehaviour {
     {
         speed = rb.velocity.magnitude;
 
+        if (respawnTimer > 0f)
+        {
+            respawnTimer -= Time.deltaTime;
+            if (respawnTimer <= 0)
+            {
+                //transform.gameObject.SetActive(true);
+                respawnTimer = -1f;
+                transform.position = new Vector3((int)((float)GameManager.instance.levelSize / 2f), 3.0f, (int)((float)GameManager.instance.levelSize / 2f));
+                rb.velocity = Vector3.zero;
+            }
+
+            return;
+        }
+
         if (dieTimer > 0f)
         {
             dieTimer -= Time.deltaTime;
             if (dieTimer <= 0)
             {
-                transform.gameObject.SetActive(false);
+                //transform.gameObject.SetActive(false);
+                transform.position = -Vector3.up * 50f;
                 dieTimer = -1f;
+                respawnTimer = respawnTime;
             }
 
             return;
@@ -94,6 +111,29 @@ public class PlayerController : MonoBehaviour {
 
         rb.AddForce(Vector3.right * speedFactor * stunFactorNow * h);
         rb.AddForce(Vector3.forward * speedFactor * stunFactorNow * v);
+
+        if (h + v == 0f)
+        {
+            if (Input.GetKey(KeyCode.W))
+            {
+                rb.AddForce(Vector3.forward * speedFactor * stunFactorNow);
+            }
+
+            if (Input.GetKey(KeyCode.S))
+            {
+                rb.AddForce(-Vector3.forward * speedFactor * stunFactorNow);
+            }
+
+            if (Input.GetKey(KeyCode.A))
+            {
+                rb.AddForce(-Vector3.right * speedFactor * stunFactorNow);
+            }
+
+            if (Input.GetKey(KeyCode.D))
+            {
+                rb.AddForce(Vector3.right * speedFactor * stunFactorNow);
+            }
+        }
     }
 
     private void ControlP2()
@@ -132,7 +172,7 @@ public class PlayerController : MonoBehaviour {
             ||  (collision.gameObject.tag == "Wall") )
         {
             if(glitchedMode) rb.AddForce(collision.contacts[0].normal*(bounceForce+speed*100f));
-            else rb.AddForce(collision.contacts[0].normal * (bounceForce + Mathf.Clamp(speed, 0f, 7f)));
+            else rb.AddForce(collision.contacts[0].normal * (bounceForce + Mathf.Clamp(speed, 0f, 5f)));
 
             //Debug.Log("BOING!");
             bounceStunTimer = bounceStunTime;
@@ -143,10 +183,10 @@ public class PlayerController : MonoBehaviour {
 
         if (collision.gameObject.tag == "Death")
         {
-            if (glitchedMode) rb.AddForce(Vector3.up);
+            if (glitchedMode) rb.AddForce(Vector3.up*5000f);
             else rb.AddForce(Vector3.up*500f);
             dieTimer = dieTime;
-            Debug.Log("DEATH!");
+            //Debug.Log("DEATH!");
         }
 
         //foreach (ContactPoint contact in collision.contacts)

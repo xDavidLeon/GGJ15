@@ -5,7 +5,10 @@ public class GameManager : MonoBehaviour {
 	public int levelSize = 13;
 	private Cell[,] cells;
 	public GameObject cellPrefab;
-    GameObject cellContainer;
+    private GameObject cellContainer;
+
+    public float eventTimer = 3.0f;
+    public float eventTimerNow = 0.0f;
 
 	void Start () {
         cells = new Cell[levelSize, levelSize];
@@ -17,8 +20,32 @@ public class GameManager : MonoBehaviour {
 	}
 	
 	void Update () {
-	
+	    if(eventTimerNow >= eventTimer) // Do level events!
+        {
+            LavaTiles();
+            eventTimerNow = 0;
+        }
+        eventTimerNow += Time.deltaTime;
 	}
+
+    #region GAMEPLAY
+    void LavaTiles()
+    {
+        int n = Random.Range(5, 10);
+        int i = 0;
+        while (i < n)
+        {
+            // Get random cube
+            Cell c = GetFreeCell();
+            c.Lava();
+            // Apply Lava Event
+            i++;
+        }
+    }
+
+    #endregion
+
+    #region CUBE_MANAGEMENT
 
     public void DrawSquare()
     {
@@ -113,4 +140,28 @@ public class GameManager : MonoBehaviour {
             AddCube(i, row, height);
         }
     }
+
+    public Cell GetCell(int row, int col)
+    {
+        return cells[row, col];
+    }
+
+    public Cell GetCell(Vector2 pos)
+    {
+        return cells[(int)pos.x, (int)pos.y];
+    }
+
+    Cell GetFreeCell()
+    {
+        Cell c = null;
+        while (c == null)
+        {
+            int row = Random.Range(0, levelSize);
+            int col = Random.Range(0, levelSize);
+            c = GetCell(row, col);
+        }
+        return c;
+    }
+
+    #endregion
 }

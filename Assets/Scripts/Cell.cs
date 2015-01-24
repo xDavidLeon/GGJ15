@@ -1,11 +1,19 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class Cell : MonoBehaviour {
-	//public Level.TEAM cellTeam = Level.TEAM.NONE;
-	public bool isActivated = false;
-	public int life = 0;
-	public int maxLife = 1;
+    public enum CELL_STATE
+    {
+        NORMAL,
+        LAVA,
+        BOULDER,
+        DANGER_LAVA,
+        DANGER_BOULDER
+    };
+
+    public CELL_STATE state = CELL_STATE.NORMAL;
+    public float timerObjective = 3.0f;
+    public float timerNow = 0;
 
 	// Use this for initialization
 	void Start () 
@@ -16,6 +24,22 @@ public class Cell : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
+        switch(state)
+        {
+            case CELL_STATE.NORMAL:
+                break;
+            case CELL_STATE.LAVA:
+                if (timerNow >= timerObjective)
+                {
+                    UndoLava();
+                    timerNow = 0;
+                }
+                break;
+            case CELL_STATE.DANGER_LAVA:
+                break;
+        }
+
+        timerNow += Time.deltaTime;
 
 	}
 
@@ -55,32 +79,50 @@ public class Cell : MonoBehaviour {
 
 	public void Clear()
 	{
-		if (isActivated) return;
-//		cellTeam = Level.TEAM.NONE;
+		if (state == CELL_STATE.NORMAL) return;
+        state = CELL_STATE.NORMAL;
 		renderer.material.SetColor("_DetailColor", Color.white);
 	}
 
-	public bool ActivateCell()
-	{
-		if (isActivated) return false;
-		particleSystem.Play();
-		life = maxLife;
-		if (HasPlayerOnTop()) return false;
-		isActivated = true;
-		Vector3 targetPos = transform.position;
-		targetPos.y = 0.5f;
-		iTween.MoveTo (this.gameObject, targetPos , 2.0f);
-		return true;
-	}
+    public void UndoLava()
+    {
+        Clear();
+        Vector3 targetPos = transform.position + new Vector3(0, 1, 0);
+        iTween.MoveTo(this.gameObject, targetPos, 2.0f);
+    }
 
-	public void GetHit()
-	{
-		life -= 1;
-		if (life <= 0)
-		{
-			Restart(false);
-		}
-	}
+    public void Lava()
+    {
+        if (state == CELL_STATE.LAVA) return;
+        state = CELL_STATE.LAVA;
+
+        timerNow = 0;
+
+        Vector3 targetPos = transform.position - new Vector3(0,1,0);
+        iTween.MoveTo(this.gameObject, targetPos, 2.0f);
+    }
+
+    //public bool ActivateCell()
+    //{
+    //    if (isActivated) return false;
+    //    particleSystem.Play();
+    //    life = maxLife;
+    //    if (HasPlayerOnTop()) return false;
+    //    isActivated = true;
+    //    Vector3 targetPos = transform.position;
+    //    targetPos.y = 0.5f;
+    //    iTween.MoveTo (this.gameObject, targetPos , 2.0f);
+    //    return true;
+    //}
+
+    //public void GetHit()
+    //{
+    //    life -= 1;
+    //    if (life <= 0)
+    //    {
+    //        Restart(false);
+    //    }
+    //}
 
 	public bool HasPlayerOnTop()
 	{
@@ -88,34 +130,40 @@ public class Cell : MonoBehaviour {
 		Vector2 pos = GetCellPos();
 		foreach (GameObject g in players)
 		{
-//			Vector2 pos2 = g.GetComponent<Player>().GetCellPos();
-//			if (pos.x == pos2.x && pos.y == pos2.y) 
-//			{
-//				return true;
-//			}
+            Vector2 pos2 = GetCellPos(g.transform.position);
+			//Vector2 pos2 = g.GetComponent<Player>().GetCellPos();
+            if (pos.x == pos2.x && pos.y == pos2.y)
+            {
+                return true;
+            }
 		}
 		return false;
 	}
+
+    public static Vector2 GetCellPos(Vector3 worldPos)
+    {
+        return new Vector2((int)worldPos.x, (int)worldPos.z);
+    }
 
 	public Vector2 GetCellPos()
 	{
 		return new Vector2((int)transform.position.z,(int)transform.position.x);
 	}
 
-	public void Restart(bool restartColor)
-	{
-		if (isActivated) 
-		{
-			particleSystem.Stop();
-			Vector3 targetPos = transform.position;
-			targetPos.y = -0.5f;
-			iTween.MoveTo(this.gameObject,targetPos,0.25f);
-		}
-		if (restartColor)
-		{
-//			cellTeam = Level.TEAM.NONE;
-			renderer.material.SetColor("_DetailColor", Color.white);
-		}
-		isActivated = false;
-	}
+//    public void Restart(bool restartColor)
+//    {
+//        if (isActivated) 
+//        {
+//            particleSystem.Stop();
+//            Vector3 targetPos = transform.position;
+//            targetPos.y = -0.5f;
+//            iTween.MoveTo(this.gameObject,targetPos,0.25f);
+//        }
+//        if (restartColor)
+//        {
+////			cellTeam = Level.TEAM.NONE;
+//            renderer.material.SetColor("_DetailColor", Color.white);
+//        }
+//        isActivated = false;
+//    }
 }

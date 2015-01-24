@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 
 public class PlayerController : MonoBehaviour {
@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour {
     public float bounceStunTime, bounceStunTimer;
     public float stunFactor;
     float stunFactorNow = 1.0f;
+    public float dieTime, dieTimer = -1f;
 
     public bool glitchedMode = false;
     public AudioClip[] sfx;
@@ -25,6 +26,18 @@ public class PlayerController : MonoBehaviour {
 	void Update () 
     {
         speed = rb.velocity.magnitude;
+
+        if (dieTimer > 0f)
+        {
+            dieTimer -= Time.deltaTime;
+            if (dieTimer <= 0)
+            {
+                transform.gameObject.SetActive(false);
+                dieTimer = -1f;
+            }
+
+            return;
+        }
 
         if (bounceStunTimer > 0.0f)
         {
@@ -69,6 +82,8 @@ public class PlayerController : MonoBehaviour {
 
     void OnCollisionEnter(Collision collision)
     {
+        if (dieTimer > 0f) return;
+
         if(     (collision.gameObject.tag == "Player")
             ||  (collision.gameObject.tag == "Obstacle")
             ||  (collision.gameObject.tag == "Wall") )
@@ -87,6 +102,7 @@ public class PlayerController : MonoBehaviour {
         {
             if (glitchedMode) rb.AddForce(Vector3.up);
             else rb.AddForce(Vector3.up*500f);
+            dieTimer = dieTime;
             Debug.Log("DEATH!");
         }
 

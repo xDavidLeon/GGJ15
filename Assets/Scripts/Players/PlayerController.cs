@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class PlayerController : MonoBehaviour {
@@ -11,6 +11,8 @@ public class PlayerController : MonoBehaviour {
     };
 
     public PLAYER_NUMBER playerNumber = PLAYER_NUMBER.PLAYER_1;
+    public GameObject modelCat;
+    public Texture[] texturesCat;
 
     Rigidbody rb;
 
@@ -31,6 +33,7 @@ public class PlayerController : MonoBehaviour {
     {
         rb = transform.GetComponent<Rigidbody>();
         rb.maxAngularVelocity = 10f;
+        modelCat.renderer.material.mainTexture = texturesCat[(int)playerNumber];
 	}
 	
 	// Update is called once per frame

@@ -106,7 +106,7 @@ public class GameManager : MonoBehaviour {
 
     public void AddCube(int col, int row, int height)
     {
-        GameObject cell = GameObject.Instantiate(cellPrefab, new Vector3(col + 0.5f, height+0.5f, row+0.5f), Quaternion.identity) as GameObject;
+        GameObject cell = GameObject.Instantiate(cellPrefab, new Vector3(col + 0.5f, height-0.5f, row+0.5f), Quaternion.identity) as GameObject;
         cell.name = "Cell_" + row + "_" + col;
         cell.transform.parent = cellContainer.transform;
         cells[row, col] = cell.GetComponent<Cell>();

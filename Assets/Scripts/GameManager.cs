@@ -16,8 +16,8 @@ public class GameManager : MonoSingleton<GameManager>{
         cellContainer = new GameObject();
 		cellContainer.name = "Cells";
 
-        //DrawMapFromTexture();
-        DrawCircle();
+        DrawMapFromTexture();
+        //DrawCircle();
         //DrawFilledCircle();
 	}
 	
@@ -36,13 +36,15 @@ public class GameManager : MonoSingleton<GameManager>{
     {
         int n = Random.Range(5, 10);
         int i = 0;
-        while (i < n)
+        int numTries = 0;
+        while (i < n && numTries < 20)
         {
             // Get random cube
             Cell c = GetFreeCell();
             c.DangerLava();
             // Apply Lava Event
             i++;
+            numTries++;
         }
     }
 
@@ -50,19 +52,36 @@ public class GameManager : MonoSingleton<GameManager>{
     {
         int n = Random.Range(1, 4);
         int i = 0;
-        while (i < n)
+        int numTries = 0;
+        while (i < n && numTries < 20)
         {
             // Get random cube
             Cell c = GetFreeCell();
             c.DangerBoulder();
             // Apply Lava Event
             i++;
+            numTries++;
         }
     }
 
     #endregion
 
     #region CUBE_MANAGEMENT
+
+    void DrawMapFromTexture()
+    {
+        levelSize = mapLayout.width;
+        Color32[] colors = mapLayout.GetPixels32();
+        
+        for (int i = 0; i < mapLayout.width; i++)
+        {
+            for (int j = 0; j < mapLayout.height; j++)
+            {
+                Color c = mapLayout.GetPixel(i, j);
+                if (c.r > 0.1f) AddCube(i, j, 0);
+            }
+        }
+    }
 
     void DrawSquare()
     {
@@ -155,13 +174,16 @@ public class GameManager : MonoSingleton<GameManager>{
 
     Cell GetFreeCell(bool stateNormal = true)
     {
+        int numTries = 0;
+
         Cell c = null;
-        while (c == null)
+        while (c == null && numTries < 20)
         {
             int row = Random.Range(0, levelSize);
             int col = Random.Range(0, levelSize);
             c = GetCell(row, col);
             if (c != null && c.state != Cell.CELL_STATE.NORMAL) c = null;
+            numTries++;
         }
         return c;
     }

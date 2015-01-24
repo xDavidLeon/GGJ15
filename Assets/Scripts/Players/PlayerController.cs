@@ -48,7 +48,7 @@ public class PlayerController : MonoBehaviour {
             {
                 //transform.gameObject.SetActive(true);
                 respawnTimer = -1f;
-                transform.position = new Vector3((int)((float)GameManager.instance.levelSize / 2f), 3.0f, (int)((float)GameManager.instance.levelSize / 2f));
+                transform.position = new Vector3((float)GameManager.instance.levelSize / 2f, 3.0f, (float)GameManager.instance.levelSize / 2f);
                 rb.velocity = Vector3.zero;
             }
 

@@ -15,6 +15,7 @@ public class Cell : MonoBehaviour {
     public CELL_STATE state = CELL_STATE.NORMAL;
     public float timerObjective = 3.0f;
     public float timerNow = 0;
+    public GameObject triggerLava;
 
 	// Use this for initialization
 	void Start () 
@@ -95,6 +96,7 @@ public class Cell : MonoBehaviour {
         Vector3 targetPos = transform.position + new Vector3(0, 1, 0);
         iTween.MoveTo(this.gameObject, targetPos, 2.0f);
         timerNow = 0;
+        triggerLava.collider.enabled = false;
     }
 
     public void DangerLava()
@@ -103,6 +105,7 @@ public class Cell : MonoBehaviour {
         state = CELL_STATE.DANGER_LAVA;
         renderer.material.SetColor("_DetailColor", Color.red);
         timerNow = 0;
+        triggerLava.collider.enabled = true;
     }
 
     public void Lava()

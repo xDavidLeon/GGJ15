@@ -15,7 +15,7 @@ public class Cell : MonoBehaviour {
     public CELL_STATE state = CELL_STATE.NORMAL;
     public float timerObjective = 3.0f;
     public float timerNow = 0;
-    public GameObject triggerLava;
+    public GameObject particlesDust;
 
 	// Use this for initialization
 	void Start () 
@@ -93,17 +93,23 @@ public class Cell : MonoBehaviour {
     {
         Clear();
         state = CELL_STATE.RESTORING;
-        Vector3 targetPos = transform.position + new Vector3(0, 1, 0);
+        Vector3 targetPos = transform.position + new Vector3(0, 1.1f, 0);
         iTween.MoveTo(this.gameObject, targetPos, 2.0f);
         timerNow = 0;
-        triggerLava.collider.enabled = false;
     }
 
     public void DangerLava()
     {
         if (state == CELL_STATE.DANGER_LAVA) return;
+        GameObject.Instantiate(particlesDust, transform.position + new Vector3(0, 0.5f, 0), particlesDust.transform.rotation);
+        Vector3 targetPos = transform.position - new Vector3(0, 0.1f, 0);
+        iTween.MoveTo(this.gameObject, targetPos, 1.0f);
+
+        iTween.ShakeRotation(this.gameObject, new Vector3(2,0,2), timerObjective);
+        //iTween.ShakePosition(this.gameObject, new Vector3(0.015f, 0, 0.015f), timerObjective);
+
         state = CELL_STATE.DANGER_LAVA;
-        renderer.material.SetColor("_DetailColor", Color.red);
+        //renderer.material.SetColor("_DetailColor", Color.red);
         timerNow = 0;
     }
 
@@ -115,8 +121,6 @@ public class Cell : MonoBehaviour {
         Vector3 targetPos = transform.position - new Vector3(0,1,0);
         iTween.MoveTo(this.gameObject, targetPos, 2.0f);
         timerNow = 0;
-        triggerLava.collider.enabled = true;
-
     }
 
     //public bool ActivateCell()

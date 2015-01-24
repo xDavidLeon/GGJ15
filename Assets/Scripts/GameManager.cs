@@ -16,7 +16,7 @@ public class GameManager : MonoSingleton<GameManager>{
         cellContainer = new GameObject();
 		cellContainer.name = "Cells";
 
-        DrawMapFromTexture();
+        //DrawMapFromTexture();
         DrawCircle();
         //DrawFilledCircle();
 	}

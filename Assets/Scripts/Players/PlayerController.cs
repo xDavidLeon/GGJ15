@@ -110,29 +110,29 @@ public class PlayerController : MonoBehaviour {
         float h = Input.GetAxis("Horizontal01");
         float v = Input.GetAxis("Vertical01");
 
-        rb.AddForce(Vector3.right * speedFactor * stunFactorNow * h);
-        rb.AddForce(Vector3.forward * speedFactor * stunFactorNow * v);
+        rb.AddForce(Vector3.right * speedFactor * stunFactorNow * h * Time.fixedDeltaTime);
+        rb.AddForce(Vector3.forward * speedFactor * stunFactorNow * v * Time.fixedDeltaTime);
 
         if (h + v == 0f)
         {
             if (Input.GetKey(KeyCode.W))
             {
-                rb.AddForce(Vector3.forward * speedFactor * stunFactorNow);
+                rb.AddForce(Vector3.forward * speedFactor * stunFactorNow * Time.fixedDeltaTime);
             }
 
             if (Input.GetKey(KeyCode.S))
             {
-                rb.AddForce(-Vector3.forward * speedFactor * stunFactorNow);
+                rb.AddForce(-Vector3.forward * speedFactor * stunFactorNow * Time.fixedDeltaTime);
             }
 
             if (Input.GetKey(KeyCode.A))
             {
-                rb.AddForce(-Vector3.right * speedFactor * stunFactorNow);
+                rb.AddForce(-Vector3.right * speedFactor * stunFactorNow * Time.fixedDeltaTime);
             }
 
             if (Input.GetKey(KeyCode.D))
             {
-                rb.AddForce(Vector3.right * speedFactor * stunFactorNow);
+                rb.AddForce(Vector3.right * speedFactor * stunFactorNow * Time.fixedDeltaTime);
             }
         }
     }
@@ -142,8 +142,8 @@ public class PlayerController : MonoBehaviour {
         float h = Input.GetAxis("Horizontal02");
         float v = Input.GetAxis("Vertical02");
 
-        rb.AddForce(Vector3.right * speedFactor * stunFactorNow * h);
-        rb.AddForce(Vector3.forward * speedFactor * stunFactorNow * v);
+        rb.AddForce(Vector3.right * speedFactor * stunFactorNow * h * Time.fixedDeltaTime);
+        rb.AddForce(Vector3.forward * speedFactor * stunFactorNow * v * Time.fixedDeltaTime);
     }
 
     private void ControlP3()
@@ -151,8 +151,8 @@ public class PlayerController : MonoBehaviour {
         float h = Input.GetAxis("Horizontal03");
         float v = Input.GetAxis("Vertical03");
 
-        rb.AddForce(Vector3.right * speedFactor * stunFactorNow * h);
-        rb.AddForce(Vector3.forward * speedFactor * stunFactorNow * v);
+        rb.AddForce(Vector3.right * speedFactor * stunFactorNow * h * Time.fixedDeltaTime);
+        rb.AddForce(Vector3.forward * speedFactor * stunFactorNow * v * Time.fixedDeltaTime);
     }
 
     private void ControlP4()
@@ -160,8 +160,8 @@ public class PlayerController : MonoBehaviour {
         float h = Input.GetAxis("Horizontal04");
         float v = Input.GetAxis("Vertical04");
 
-        rb.AddForce(Vector3.right * speedFactor * stunFactorNow * h);
-        rb.AddForce(Vector3.forward * speedFactor * stunFactorNow * v);
+        rb.AddForce(Vector3.right * speedFactor * stunFactorNow * h * Time.fixedDeltaTime);
+        rb.AddForce(Vector3.forward * speedFactor * stunFactorNow * v * Time.fixedDeltaTime);
     }
 
     void OnCollisionEnter(Collision collision)
@@ -184,7 +184,7 @@ public class PlayerController : MonoBehaviour {
 
         if (collision.gameObject.tag == "Death")
         {
-            if (glitchedMode) rb.AddForce(Vector3.up*5000f);
+            if (glitchedMode) rb.AddForce(Vector3.up*2000f);
             else rb.AddForce(Vector3.up*500f);
             dieTimer = dieTime;
             //Debug.Log("DEATH!");

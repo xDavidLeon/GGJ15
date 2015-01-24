@@ -2,6 +2,16 @@ using UnityEngine;
 using System.Collections;
 
 public class PlayerController : MonoBehaviour {
+    public enum PLAYER_NUMBER
+    {
+        PLAYER_1,
+        PLAYER_2,
+        PLAYER_3,
+        PLAYER_4
+    };
+
+    public PLAYER_NUMBER playerNumber = PLAYER_NUMBER.PLAYER_1;
+
     Rigidbody rb;
 
     public float speedFactor;
@@ -49,26 +59,21 @@ public class PlayerController : MonoBehaviour {
             }
         }
 
-        if (Input.GetKey(KeyCode.W))
+        switch(playerNumber)
         {
-            rb.AddForce(Vector3.forward * speedFactor * stunFactorNow);
+            case PLAYER_NUMBER.PLAYER_1:
+                ControlP1();
+                break;
+            case PLAYER_NUMBER.PLAYER_2:
+                ControlP2();
+                break;
+            case PLAYER_NUMBER.PLAYER_3:
+                ControlP3();
+                break;
+            case PLAYER_NUMBER.PLAYER_4:
+                ControlP4();
+                break;
         }
-
-        if (Input.GetKey(KeyCode.S))
-        {
-            rb.AddForce(-Vector3.forward * speedFactor * stunFactorNow);
-        }
-
-        if (Input.GetKey(KeyCode.A))
-        {
-            rb.AddForce(-Vector3.right * speedFactor * stunFactorNow);
-        }
-
-        if (Input.GetKey(KeyCode.D))
-        {
-            rb.AddForce(Vector3.right * speedFactor * stunFactorNow);
-        }
-
 
         //Debug.Log(rb.angularVelocity.magnitude);
 
@@ -79,6 +84,44 @@ public class PlayerController : MonoBehaviour {
             rb.angularVelocity = Vector3.zero;
         }
 	}
+
+    private void ControlP1()
+    {
+        float h = Input.GetAxis("Horizontal01");
+        float v = Input.GetAxis("Vertical01");
+
+        Debug.Log(h);
+
+        rb.AddForce(Vector3.right * speedFactor * stunFactorNow * h);
+        rb.AddForce(Vector3.forward * speedFactor * stunFactorNow * v);
+    }
+
+    private void ControlP2()
+    {
+        float h = Input.GetAxis("Horizontal02");
+        float v = Input.GetAxis("Vertical02");
+
+        rb.AddForce(Vector3.right * speedFactor * stunFactorNow * h);
+        rb.AddForce(Vector3.forward * speedFactor * stunFactorNow * v);
+    }
+
+    private void ControlP3()
+    {
+        float h = Input.GetAxis("Horizontal03");
+        float v = Input.GetAxis("Vertical03");
+
+        rb.AddForce(Vector3.right * speedFactor * stunFactorNow * h);
+        rb.AddForce(Vector3.forward * speedFactor * stunFactorNow * v);
+    }
+
+    private void ControlP4()
+    {
+        float h = Input.GetAxis("Horizontal04");
+        float v = Input.GetAxis("Vertical04");
+
+        rb.AddForce(Vector3.right * speedFactor * stunFactorNow * h);
+        rb.AddForce(Vector3.forward * speedFactor * stunFactorNow * v);
+    }
 
     void OnCollisionEnter(Collision collision)
     {

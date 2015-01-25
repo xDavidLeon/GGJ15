@@ -24,10 +24,14 @@ public class GameManager : MonoSingleton<GameManager>{
     public float eventTimer = 3.0f;
     public float eventTimerNow = 0.0f;
 
+    [HideInInspector]
+    public Vector3 center;
+
 	void Start () {
         cells = new Cell[levelSize, levelSize];
         cellContainer = new GameObject("Cells");
         levelContainer = new GameObject("LevelContainer");
+        center = new Vector3(6f, 0.5f, 6f);
 
         RestartLevel();
 	}

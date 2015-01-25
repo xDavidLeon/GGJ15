@@ -79,7 +79,20 @@ public class PlayerController : MonoBehaviour {
             }
         }
 
-        switch(playerNumber)
+        //Debug.Log(rb.angularVelocity.magnitude);
+
+        //Por si te caes
+        if (Vector3.Distance(transform.position, GameManager.instance.center) > 10f)
+        {
+            Die();
+        }
+	}
+
+    void FixedUpdate()
+    {
+        if ((respawnTimer > 0f) || (dieTimer > 0f)) return;
+
+        switch (playerNumber)
         {
             case PLAYER_NUMBER.PLAYER_1:
                 ControlP1();
@@ -94,16 +107,7 @@ public class PlayerController : MonoBehaviour {
                 ControlP4();
                 break;
         }
-
-        //Debug.Log(rb.angularVelocity.magnitude);
-
-        //Por si te caes
-        if (transform.position.y < -1f)
-        {
-            transform.position = Vector3.zero + Vector3.up * 3f;
-            rb.angularVelocity = Vector3.zero;
-        }
-	}
+    }
 
     private void ControlP1()
     {
@@ -186,7 +190,8 @@ public class PlayerController : MonoBehaviour {
         {
             if (glitchedMode) rb.AddForce(Vector3.up*4000f);
             else rb.AddForce(Vector3.up*1000f);
-            dieTimer = dieTime;
+
+            Die();
             //Debug.Log("DEATH!");
         }
 
@@ -194,5 +199,10 @@ public class PlayerController : MonoBehaviour {
         //{
         //    Debug.DrawRay(contact.point, contact.normal, Color.white);
         //}
+    }
+
+    public void Die()
+    {
+        dieTimer = dieTime;
     }
 }

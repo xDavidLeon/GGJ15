@@ -106,7 +106,11 @@ public class GameManager : MonoSingleton<GameManager>{
             case PLAY_STATE.PLAY:
                 canvasPlay.SetActive(true);
                 playerSelection.SetActive(false);
-                foreach (GameObject g in players) g.GetComponent<PlayerController>().enabled = true;
+                foreach (GameObject g in players)
+                {
+                    if (g.GetComponent<PlayerController>() == null) continue;
+                    g.GetComponent<PlayerController>().enabled = true;
+                }
                 break;
             case PLAY_STATE.END:
                 canvasPlay.SetActive(false);
@@ -340,7 +344,7 @@ public class GameManager : MonoSingleton<GameManager>{
         return cells[(int)pos.x, (int)pos.y];
     }
 
-    Cell GetFreeCell(bool stateNormal = true)
+    public Cell GetFreeCell(bool stateNormal = true)
     {
         int numTries = 0;
 

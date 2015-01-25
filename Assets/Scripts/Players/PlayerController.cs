@@ -71,7 +71,7 @@ public class PlayerController : MonoBehaviour {
             {
                 //transform.gameObject.SetActive(true);
                 respawnTimer = -1f;
-                transform.position = new Vector3((float)GameManager.instance.levelSize / 2f, 3.0f, (float)GameManager.instance.levelSize / 2f);
+                transform.position = gm.GetFreeCell().gameObject.transform.position + new Vector3(0, 3.0f, 0);
                 rb.velocity = Vector3.zero;
             }
 

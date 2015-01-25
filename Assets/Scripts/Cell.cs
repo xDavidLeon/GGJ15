@@ -94,6 +94,7 @@ public class Cell : MonoBehaviour {
         timerNow = 0;
 
         GameObject boulder = GameObject.Instantiate(prefabBoulder, transform.position + new Vector3(0, 20, 0), prefabBoulder.transform.rotation) as GameObject;
+        boulder.transform.parent = GameManager.instance.levelContainer.transform;
         boulder.transform.Rotate(0, 90 * Random.Range(0, 10), 0);
     }
 

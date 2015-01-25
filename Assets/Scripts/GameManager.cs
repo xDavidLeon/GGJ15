@@ -2,26 +2,54 @@ using UnityEngine;
 using System.Collections;
 
 public class GameManager : MonoSingleton<GameManager>{
+    [System.Serializable]
+    public struct Score
+    {
+        public int scoreP1, scoreP2, scoreP3, scoreP4;
+
+        public void Restart()
+        {
+            scoreP1 = scoreP2 = scoreP3 = scoreP4 = 0;
+        }
+    };
+
+    public Score scores; 
 	public Texture2D mapLayout;
 	public int levelSize = 13;
 	private Cell[,] cells;
 	public GameObject cellPrefab;
     private GameObject cellContainer;
+    public GameObject levelContainer;
 
     public float eventTimer = 3.0f;
     public float eventTimerNow = 0.0f;
 
 	void Start () {
         cells = new Cell[levelSize, levelSize];
-        cellContainer = new GameObject();
-		cellContainer.name = "Cells";
+        cellContainer = new GameObject("Cells");
+        levelContainer = new GameObject("LevelContainer");
+
+        RestartLevel();
+	}
+
+    void RestartLevel()
+    {
+        for (int i = 0; i < levelSize; i++)
+            for (int j = 0; j < levelSize; j++ )
+            {
+                if (cells[i, j] == null) continue;
+                GameObject.Destroy(cells[i,j].gameObject);
+                cells[i,j] = null;
+            }
+
+        scores.Restart();
 
         DrawMapFromTexture();
-        //DrawCircle();
-        //DrawFilledCircle();
-	}
+    }
 	
 	void Update () {
+        if (Input.GetKeyDown(KeyCode.R)) RestartLevel();
+
 	    if(eventTimerNow >= eventTimer) // Do level events!
         {
             LavaTiles();

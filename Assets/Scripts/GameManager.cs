@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class GameManager : MonoSingleton<GameManager>{
     [System.Serializable]
@@ -115,6 +116,19 @@ public class GameManager : MonoSingleton<GameManager>{
             case PLAY_STATE.END:
                 canvasPlay.SetActive(false);
                 playerSelection.SetActive(true);
+                
+                pressStart[0].SetActive(false);
+                playerCameras[0].SetActive(true);
+                playerCameras[0].camera.cullingMask = 0;
+                pressStart[1].SetActive(false);
+                playerCameras[1].SetActive(true);
+                playerCameras[1].camera.cullingMask = 0;
+                pressStart[2].SetActive(false);
+                playerCameras[2].SetActive(true);
+                playerCameras[2].camera.cullingMask = 0;
+                pressStart[3].SetActive(false);
+                playerCameras[3].SetActive(true);
+                playerCameras[3].camera.cullingMask = 0;
                 break;
         }
     }

@@ -15,6 +15,6 @@ public class Countdown : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         if (gm.timer <= 0) text.text = "";
-        else text.text = gm.timer.ToString(".0");
+        else text.text = System.Convert.ToString(System.Math.Floor(gm.timer));
 	}
 }

@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections;
 
-[ExecuteInEditMode]
 public class Lava : MonoBehaviour {
     public float speed = 1;
 	// Use this for initialization

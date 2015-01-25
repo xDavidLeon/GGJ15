@@ -56,6 +56,7 @@ public class GameManager : MonoSingleton<GameManager>{
     [Header("UI")]
     public GameObject[] playerCameras;
     public GameObject[] pressStart;
+    public GameObject logo;
 
     [HideInInspector]
     public Vector3 center;
@@ -95,6 +96,7 @@ public class GameManager : MonoSingleton<GameManager>{
         switch (state)
         {
             case PLAY_STATE.PLAYER_SELECTION:
+                logo.SetActive(true);
                 canvasPlay.SetActive(false);
                 playerSelection.SetActive(true);
                 pressStart[0].SetActive(true);
@@ -112,6 +114,7 @@ public class GameManager : MonoSingleton<GameManager>{
 
                 break;
             case PLAY_STATE.PLAY:
+                logo.SetActive(false);
                 canvasPlay.SetActive(true);
                 playerSelection.SetActive(false);
                 foreach (GameObject g in players)
@@ -121,6 +124,7 @@ public class GameManager : MonoSingleton<GameManager>{
                 }
                 break;
             case PLAY_STATE.END:
+                logo.SetActive(false);
                 canvasPlay.SetActive(false);
                 playerSelection.SetActive(true);
                 

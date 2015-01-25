@@ -74,6 +74,7 @@ public class GameManager : MonoSingleton<GameManager>{
         DrawMapFromTexture();
 
         playState = PLAY_STATE.PLAYER_SELECTION;
+        timer = 0;
     }
 	
 	void Update () {
@@ -141,6 +142,7 @@ public class GameManager : MonoSingleton<GameManager>{
                     {
                         playState = PLAY_STATE.PLAY;
                         foreach (GameObject g in players) g.GetComponent<PlayerController>().enabled = true;
+                        timer = 0;
                     }
                 }
                 else
@@ -164,6 +166,7 @@ public class GameManager : MonoSingleton<GameManager>{
                 if (timer >= roundTime)
                 {
                     playState = PLAY_STATE.END;
+                    timer = 0;
                 }
                 break;
             case PLAY_STATE.END:

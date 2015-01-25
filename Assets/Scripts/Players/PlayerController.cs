@@ -184,8 +184,8 @@ public class PlayerController : MonoBehaviour {
 
         if (collision.gameObject.tag == "Death")
         {
-            if (glitchedMode) rb.AddForce(Vector3.up*2000f);
-            else rb.AddForce(Vector3.up*500f);
+            if (glitchedMode) rb.AddForce(Vector3.up*4000f);
+            else rb.AddForce(Vector3.up*1000f);
             dieTimer = dieTime;
             //Debug.Log("DEATH!");
         }

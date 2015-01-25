@@ -45,6 +45,8 @@ public class GameManager : MonoSingleton<GameManager>{
     public GameObject volcanoPartD;
     public bool startPart2 = false, startPart3 = false;
     public float lavaVelocity = 10f;
+    public float gameTimer;
+    public float part1Time, part2Time;
 
     [Header("Times")]
     public float timer = 0;
@@ -115,6 +117,7 @@ public class GameManager : MonoSingleton<GameManager>{
 
                 break;
             case PLAY_STATE.PLAY:
+                gameTimer = 0f;
                 audio.Play();
                 logo.SetActive(false);
                 canvasPlay.SetActive(true);
@@ -210,6 +213,11 @@ public class GameManager : MonoSingleton<GameManager>{
 
                 break;
             case PLAY_STATE.PLAY:
+
+                gameTimer += Time.deltaTime;
+
+                if (gameTimer > part1Time) startPart2 = true;
+                if (gameTimer > part2Time) startPart3 = true;
 
                 if(eventTimerNow >= eventTimer) // Do level events!
                 {

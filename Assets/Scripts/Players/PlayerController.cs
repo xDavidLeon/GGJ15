@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour {
     public PLAYER_NUMBER playerNumber = PLAYER_NUMBER.PLAYER_1;
     public GameObject modelCat;
     public Texture[] texturesCat;
-
+    public GameObject particlesStars;
     Rigidbody rb;
 
     public float speedFactor;
@@ -28,6 +28,7 @@ public class PlayerController : MonoBehaviour {
 
     public bool glitchedMode = false;
     public AudioClip[] sfx;
+    public AudioClip sfxDeath;
 
 	// Use this for initialization
 	void Start () 
@@ -206,6 +207,7 @@ public class PlayerController : MonoBehaviour {
             stunFactorNow = stunFactor;
 
             audio.PlayOneShot(sfx[Random.Range(0, sfx.Length)]);
+            GameObject g = GameObject.Instantiate(particlesStars, collision.contacts[0].point, particlesStars.transform.rotation) as GameObject;
         }
 
         if (collision.gameObject.tag == "Death")
@@ -214,6 +216,7 @@ public class PlayerController : MonoBehaviour {
             else rb.AddForce(Vector3.up*1000f);
 
             Die();
+            audio.PlayOneShot(sfxDeath);
             //Debug.Log("DEATH!");
 
             switch (playerNumber)

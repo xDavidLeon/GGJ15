@@ -14,7 +14,7 @@ public class Countdown : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (gm.timer <= 0) text.text = "";
+        if (gm.playState == GameManager.PLAY_STATE.PLAYER_SELECTION && gm.timer == 5) text.text = "";
         else text.text = System.Convert.ToString(System.Math.Floor(gm.timer));
 	}
 }

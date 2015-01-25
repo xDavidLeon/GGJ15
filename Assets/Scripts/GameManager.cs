@@ -172,10 +172,10 @@ public class GameManager : MonoSingleton<GameManager>{
 
                 if (players.Length > 1)
                 {
-                    timer += Time.deltaTime;
-                    if (timer >= startCountdownTime) SetState(PLAY_STATE.PLAY);
+                    timer -= Time.deltaTime;
+                    if (timer <= 0) SetState(PLAY_STATE.PLAY);
                 }
-                else timer = 0;
+                else timer = 5;
 
                 break;
             case PLAY_STATE.PLAY:

@@ -39,7 +39,6 @@ public class GameManager : MonoSingleton<GameManager>{
     public GameObject levelContainer;
 
     [Header("Times")]
-    public bool startCountdown = false;
     public float timer = 0;
     public float startCountdownTime = 10.0f;
     public float roundTime = 60.0f;
@@ -60,6 +59,7 @@ public class GameManager : MonoSingleton<GameManager>{
 
     void RestartLevel()
     {
+        foreach (Transform t in levelContainer.transform) GameObject.Destroy(t.gameObject);
         foreach (GameObject g in players) GameObject.Destroy(g);
         for (int i = 0; i < levelSize; i++)
             for (int j = 0; j < levelSize; j++ )
@@ -76,6 +76,29 @@ public class GameManager : MonoSingleton<GameManager>{
         playState = PLAY_STATE.PLAYER_SELECTION;
         timer = 0;
     }
+
+    void SetState(PLAY_STATE state)
+    {
+        if (state == playState) return;
+        playState = state;
+        timer = 0;
+        switch (state)
+        {
+            case PLAY_STATE.PLAYER_SELECTION:
+                canvasPlay.SetActive(false);
+                playerSelection.SetActive(true);
+                break;
+            case PLAY_STATE.PLAY:
+                canvasPlay.SetActive(true);
+                playerSelection.SetActive(false);
+                foreach (GameObject g in players) g.GetComponent<PlayerController>().enabled = true;
+                break;
+            case PLAY_STATE.END:
+                canvasPlay.SetActive(false);
+                playerSelection.SetActive(true);
+                break;
+        }
+    }
 	
 	void Update () {
         if (Input.GetKeyDown(KeyCode.R)) RestartLevel();
@@ -83,9 +106,6 @@ public class GameManager : MonoSingleton<GameManager>{
         switch(playState)
         {
             case PLAY_STATE.PLAYER_SELECTION:
-                canvasPlay.SetActive(false);
-                playerSelection.SetActive(true);
-
                 if (Input.GetButtonDown("Start01"))
                 {
                     GameObject.Find("PressStartP1").SetActive(false);
@@ -136,25 +156,14 @@ public class GameManager : MonoSingleton<GameManager>{
 
                 if (players.Length > 1)
                 {
-                    startCountdown = true;
                     timer += Time.deltaTime;
-                    if (timer >= startCountdownTime)
-                    {
-                        playState = PLAY_STATE.PLAY;
-                        foreach (GameObject g in players) g.GetComponent<PlayerController>().enabled = true;
-                        timer = 0;
-                    }
+                    if (timer >= startCountdownTime) SetState(PLAY_STATE.PLAY);
                 }
-                else
-                {
-                    startCountdown = false;
-                    timer = 0;
-                }
+                else timer = 0;
 
                 break;
             case PLAY_STATE.PLAY:
-                canvasPlay.SetActive(true);
-                playerSelection.SetActive(false);
+
                 if(eventTimerNow >= eventTimer) // Do level events!
                 {
                     LavaTiles();
@@ -163,19 +172,12 @@ public class GameManager : MonoSingleton<GameManager>{
                 }
                 eventTimerNow += Time.deltaTime;
                 timer += Time.deltaTime;
-                if (timer >= roundTime)
-                {
-                    playState = PLAY_STATE.END;
-                    timer = 0;
-                }
+                if (timer >= roundTime) SetState(PLAY_STATE.END);
                 break;
             case PLAY_STATE.END:
-                playerSelection.SetActive(true);
-                canvasPlay.SetActive(false);
-
                 if (Input.GetButtonDown("Start01") || Input.GetButtonDown("Start02") || Input.GetButtonDown("Start03") || Input.GetButtonDown("Start04"))
                 {
-                    playState = PLAY_STATE.PLAYER_SELECTION;
+                    SetState(PLAY_STATE.PLAYER_SELECTION);
                 }
                 break;
         }

@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour {
         PLAYER_4
     };
 
+    GameManager gm;
     public PLAYER_NUMBER playerNumber = PLAYER_NUMBER.PLAYER_1;
     public GameObject modelCat;
     public Texture[] texturesCat;
@@ -31,10 +32,31 @@ public class PlayerController : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
     {
+        gm = GameManager.instance;
         rb = transform.GetComponent<Rigidbody>();
         rb.maxAngularVelocity = 10f;
-        modelCat.renderer.material.mainTexture = texturesCat[(int)playerNumber];
 	}
+
+    public void Init()
+    {
+        modelCat.renderer.material.mainTexture = texturesCat[(int)playerNumber];
+        switch (playerNumber)
+        {
+            case PLAYER_NUMBER.PLAYER_1:
+                modelCat.transform.parent.renderer.material.color = new Color(0, 1.0f, 0, 45.0f / 255.0f);
+                break;
+            case PLAYER_NUMBER.PLAYER_2:
+                modelCat.transform.parent.renderer.material.color = new Color(1.0f, 0, 0, 45.0f / 255.0f);
+                break;
+            case PLAYER_NUMBER.PLAYER_3:
+                modelCat.transform.parent.renderer.material.color = new Color(0.0f, 0, 0, 45.0f / 255.0f);
+                break;
+            case PLAYER_NUMBER.PLAYER_4:
+                modelCat.transform.parent.renderer.material.color = new Color(255.0f / 255.0f, 255.0f / 255.0f, 0.0f / 255.0f, 45.0f / 255.0f);
+                break;
+        }
+        audio.PlayOneShot(sfx[Random.Range(0, sfx.Length)]);
+    }
 	
 	// Update is called once per frame
 	void Update () 
@@ -193,6 +215,30 @@ public class PlayerController : MonoBehaviour {
 
             Die();
             //Debug.Log("DEATH!");
+
+            switch (playerNumber)
+            {
+                case PLAYER_NUMBER.PLAYER_1:
+                    gm.scores.scoreP2++;
+                    gm.scores.scoreP3++;
+                    gm.scores.scoreP4++;
+                    break;
+                case PLAYER_NUMBER.PLAYER_2:
+                    gm.scores.scoreP1++;
+                    gm.scores.scoreP3++;
+                    gm.scores.scoreP4++;
+                    break;
+                case PLAYER_NUMBER.PLAYER_3:
+                    gm.scores.scoreP2++;
+                    gm.scores.scoreP1++;
+                    gm.scores.scoreP4++;
+                    break;
+                case PLAYER_NUMBER.PLAYER_4:
+                    gm.scores.scoreP2++;
+                    gm.scores.scoreP3++;
+                    gm.scores.scoreP1++;
+                    break;
+            }
         }
 
         //foreach (ContactPoint contact in collision.contacts)

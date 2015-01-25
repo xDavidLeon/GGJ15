@@ -13,12 +13,28 @@ public class GameManager : MonoSingleton<GameManager>{
         }
     };
 
+    public enum PLAY_STATE
+    {
+        PLAYER_SELECTION,
+        PLAY,
+        END
+    };
+
+    public PLAY_STATE playState = PLAY_STATE.PLAYER_SELECTION;
     public Score scores; 
 	public Texture2D mapLayout;
 	public int levelSize = 13;
 	private Cell[,] cells;
 	public GameObject cellPrefab;
     private GameObject cellContainer;
+    public GameObject playerSelection;
+    public GameObject canvasPlay;
+    public GameObject playerPrefab;
+    public GameObject[] players;
+    public bool startCountdown = false;
+    public float timer = 0;
+
+    [HideInInspector]
     public GameObject levelContainer;
 
     public float eventTimer = 3.0f;
@@ -38,6 +54,7 @@ public class GameManager : MonoSingleton<GameManager>{
 
     void RestartLevel()
     {
+        foreach (GameObject g in players) GameObject.Destroy(g);
         for (int i = 0; i < levelSize; i++)
             for (int j = 0; j < levelSize; j++ )
             {
@@ -49,18 +66,110 @@ public class GameManager : MonoSingleton<GameManager>{
         scores.Restart();
 
         DrawMapFromTexture();
+
+        playState = PLAY_STATE.PLAYER_SELECTION;
     }
 	
 	void Update () {
         if (Input.GetKeyDown(KeyCode.R)) RestartLevel();
-
-	    if(eventTimerNow >= eventTimer) // Do level events!
+        players = GameObject.FindGameObjectsWithTag("Player");
+        switch(playState)
         {
-            LavaTiles();
-            BoulderTiles();
-            eventTimerNow = 0;
+            case PLAY_STATE.PLAYER_SELECTION:
+                canvasPlay.SetActive(false);
+                playerSelection.SetActive(true);
+
+                if (Input.GetButtonDown("Start01"))
+                {
+                    GameObject.Find("PressStartP1").SetActive(false);
+                    GameObject.Find("PlayerCamera01").camera.cullingMask = Camera.main.cullingMask;
+                    GameObject cat = GameObject.Instantiate(playerPrefab, new Vector3(3.39f, 0.325f, 6), Quaternion.Euler(0, 180, 0)) as GameObject;
+                    cat.name = "Player01";
+                    cat.GetComponent<PlayerController>().playerNumber = PlayerController.PLAYER_NUMBER.PLAYER_1;
+                    cat.GetComponent<PlayerController>().Init();
+                    cat.GetComponent<PlayerController>().enabled = false;
+                    cat.transform.parent = levelContainer.transform;
+                }
+                else if (Input.GetButtonDown("Start02"))
+                {
+                    GameObject.Find("PressStartP2").SetActive(false);
+                    GameObject.Find("PlayerCamera02").camera.cullingMask = Camera.main.cullingMask;
+                    GameObject cat = GameObject.Instantiate(playerPrefab, new Vector3(5.39f, 0.325f, 6), Quaternion.Euler(0, 180, 0)) as GameObject;
+                    cat.GetComponent<PlayerController>().playerNumber = PlayerController.PLAYER_NUMBER.PLAYER_2;
+                    cat.GetComponent<PlayerController>().Init();
+                    cat.name = "Player02";
+
+                    cat.GetComponent<PlayerController>().enabled = false;
+                    cat.transform.parent = levelContainer.transform;
+                }
+                else if (Input.GetButtonDown("Start03"))
+                {
+                    GameObject.Find("PressStartP3").SetActive(false);
+                    GameObject.Find("PlayerCamera03").camera.cullingMask = Camera.main.cullingMask;
+                    GameObject cat = GameObject.Instantiate(playerPrefab, new Vector3(7.39f, 0.325f, 6), Quaternion.Euler(0, 180, 0)) as GameObject;
+                    cat.GetComponent<PlayerController>().playerNumber = PlayerController.PLAYER_NUMBER.PLAYER_3;
+                    cat.GetComponent<PlayerController>().Init();
+                    cat.name = "Player03";
+
+                    cat.GetComponent<PlayerController>().enabled = false;
+                    cat.transform.parent = levelContainer.transform;
+                }
+                else if (Input.GetButtonDown("Start04"))
+                {
+                    GameObject.Find("PressStartP4").SetActive(false);
+                    GameObject.Find("PlayerCamera04").camera.cullingMask = Camera.main.cullingMask;
+                    GameObject cat = GameObject.Instantiate(playerPrefab, new Vector3(9.39f, 0.325f, 6), Quaternion.Euler(0, 180, 0)) as GameObject;
+                    cat.GetComponent<PlayerController>().playerNumber = PlayerController.PLAYER_NUMBER.PLAYER_4;
+                    cat.GetComponent<PlayerController>().Init();
+                    cat.name = "Player04";
+
+                    cat.GetComponent<PlayerController>().enabled = false;
+                    cat.transform.parent = levelContainer.transform;
+                }
+
+                if (players.Length > 1)
+                {
+                    startCountdown = true;
+                    timer += Time.deltaTime;
+                    if (timer >= 10.0f)
+                    {
+                        playState = PLAY_STATE.PLAY;
+                        foreach (GameObject g in players) g.GetComponent<PlayerController>().enabled = true;
+                    }
+                }
+                else
+                {
+                    startCountdown = false;
+                    timer = 0;
+                }
+
+                break;
+            case PLAY_STATE.PLAY:
+                canvasPlay.SetActive(true);
+                playerSelection.SetActive(false);
+                if(eventTimerNow >= eventTimer) // Do level events!
+                {
+                    LavaTiles();
+                    BoulderTiles();
+                    eventTimerNow = 0;
+                }
+                eventTimerNow += Time.deltaTime;
+                timer += Time.deltaTime;
+                if (timer >= 60.0f)
+                {
+                    playState = PLAY_STATE.END;
+                }
+                break;
+            case PLAY_STATE.END:
+                playerSelection.SetActive(true);
+                canvasPlay.SetActive(false);
+
+                if (Input.GetButtonDown("Start01") || Input.GetButtonDown("Start02") || Input.GetButtonDown("Start03") || Input.GetButtonDown("Start04"))
+                {
+                    playState = PLAY_STATE.PLAYER_SELECTION;
+                }
+                break;
         }
-        eventTimerNow += Time.deltaTime;
 	}
 
     #region GAMEPLAY

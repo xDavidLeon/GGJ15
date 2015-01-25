@@ -15,6 +15,8 @@ public class PlayerController : MonoBehaviour {
     public GameObject modelCat;
     public Texture[] texturesCat;
     public GameObject particlesStars;
+    public GameObject particlesFire;
+
     Rigidbody rb;
 
     public float speedFactor;
@@ -214,6 +216,7 @@ public class PlayerController : MonoBehaviour {
         {
             if (glitchedMode) rb.AddForce(Vector3.up*4000f);
             else rb.AddForce(Vector3.up*1000f);
+            GameObject g = GameObject.Instantiate(particlesFire, collision.contacts[0].point, particlesStars.transform.rotation) as GameObject;
 
             Die();
             audio.PlayOneShot(sfxDeath);

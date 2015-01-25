@@ -96,6 +96,7 @@ public class GameManager : MonoSingleton<GameManager>{
         switch (state)
         {
             case PLAY_STATE.PLAYER_SELECTION:
+                audio.Stop();
                 logo.SetActive(true);
                 canvasPlay.SetActive(false);
                 playerSelection.SetActive(true);
@@ -114,6 +115,7 @@ public class GameManager : MonoSingleton<GameManager>{
 
                 break;
             case PLAY_STATE.PLAY:
+                audio.Play();
                 logo.SetActive(false);
                 canvasPlay.SetActive(true);
                 playerSelection.SetActive(false);

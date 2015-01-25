@@ -7,7 +7,9 @@ public class Cell : MonoBehaviour {
         NORMAL,
         LAVA,
         BOULDER,
+        FALL,
         DANGER_LAVA,
+        DANGER_FALL,
         DANGER_BOULDER,
         RESTORING
     };
@@ -38,9 +40,15 @@ public class Cell : MonoBehaviour {
                 if (timerNow >= timerObjective)
                     UndoLava();
                 break;
+            case CELL_STATE.FALL:
+                break;
             case CELL_STATE.DANGER_LAVA:
                 if (timerNow >= timerObjective)
                     Lava();
+                break;
+            case CELL_STATE.DANGER_FALL:
+                if (timerNow >= timerObjective)
+                    Fall();
                 break;
             case CELL_STATE.DANGER_BOULDER:
                 if (timerNow >= timerObjective)
@@ -96,6 +104,30 @@ public class Cell : MonoBehaviour {
         GameObject boulder = GameObject.Instantiate(prefabBoulder, transform.position + new Vector3(0, 25, 0), prefabBoulder.transform.rotation) as GameObject;
         boulder.transform.parent = GameManager.instance.levelContainer.transform;
         boulder.transform.Rotate(0, 90 * Random.Range(0, 10), 0);
+    }
+
+    public void DangerFall()
+    {
+        if (state == CELL_STATE.DANGER_FALL) return;
+        state = CELL_STATE.DANGER_FALL;
+        timerNow = 0;
+
+        //GameObject.Instantiate(particlesDust, transform.position + new Vector3(0, 0.5f, 0), particlesDust.transform.rotation);
+        Vector3 targetPos = transform.position - new Vector3(0, 0.1f, 0);
+        iTween.MoveTo(this.gameObject, targetPos, 1.0f);
+
+        iTween.ShakeRotation(this.gameObject, new Vector3(4, 8, 4), timerObjective * 2);
+        //iTween.ShakePosition(this.gameObject, new Vector3(0.015f, 0, 0.015f), timerObjective);
+    }
+
+    public void Fall()
+    {
+        if (state == CELL_STATE.FALL) return;
+        state = CELL_STATE.FALL;
+        timerNow = 0;
+
+        Vector3 targetPos = transform.position - new Vector3(0, 100, 0);
+        iTween.MoveTo(this.gameObject, targetPos, 2.0f);
     }
 
     public void Lava()

@@ -89,6 +89,7 @@ public class GameManager : MonoSingleton<GameManager>{
         DrawMapFromTexture();
 
         SetState(PLAY_STATE.PLAYER_SELECTION);
+        eventTimer = 3.0f;
     }
 
     void SetState(PLAY_STATE state)
@@ -117,6 +118,7 @@ public class GameManager : MonoSingleton<GameManager>{
 
                 break;
             case PLAY_STATE.PLAY:
+                eventTimer = 3.0f;
                 gameTimer = 0f;
                 audio.Play();
                 logo.SetActive(false);
@@ -216,18 +218,27 @@ public class GameManager : MonoSingleton<GameManager>{
 
                 gameTimer += Time.deltaTime;
 
-                if (gameTimer > part1Time) startPart2 = true;
-                if (gameTimer > part2Time) startPart3 = true;
+                if (gameTimer > part1Time)
+                {
+                    startPart2 = true;
+                    eventTimer = 2.0f;
+                }
+                if (gameTimer > part2Time)
+                {
+                    eventTimer = 1.0f;
+                    startPart3 = true;
+                }
 
                 if(eventTimerNow >= eventTimer) // Do level events!
                 {
-                    LavaTiles();
                     BoulderTiles();
+                    if (gameTimer > part2Time) FallTiles();
+                    else LavaTiles();
                     eventTimerNow = 0;
                 }
                 eventTimerNow += Time.deltaTime;
                 timer += Time.deltaTime;
-                if (timer >= roundTime) SetState(PLAY_STATE.END);
+                if (timer >= roundTime) SetState(PLAY_STATE.PLAYER_SELECTION);
                 break;
             case PLAY_STATE.END:
                 if (Input.GetButtonDown("Start01") || Input.GetButtonDown("Start02") || Input.GetButtonDown("Start03") || Input.GetButtonDown("Start04"))
@@ -265,6 +276,22 @@ public class GameManager : MonoSingleton<GameManager>{
             // Get random cube
             Cell c = GetFreeCell();
             c.DangerBoulder();
+            // Apply Lava Event
+            i++;
+            numTries++;
+        }
+    }
+
+    void FallTiles()
+    {
+        int n = Random.Range(4, 6);
+        int i = 0;
+        int numTries = 0;
+        while (i < n && numTries < 20)
+        {
+            // Get random cube
+            Cell c = GetFreeCell();
+            c.DangerFall();
             // Apply Lava Event
             i++;
             numTries++;

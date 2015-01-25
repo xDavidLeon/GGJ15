@@ -45,6 +45,10 @@ public class GameManager : MonoSingleton<GameManager>{
     public float eventTimer = 3.0f;
     public float eventTimerNow = 0.0f;
 
+    [Header("UI")]
+    public GameObject[] playerCameras;
+    public GameObject[] pressStart;
+
     [HideInInspector]
     public Vector3 center;
 
@@ -73,13 +77,11 @@ public class GameManager : MonoSingleton<GameManager>{
 
         DrawMapFromTexture();
 
-        playState = PLAY_STATE.PLAYER_SELECTION;
-        timer = 0;
+        SetState(PLAY_STATE.PLAYER_SELECTION);
     }
 
     void SetState(PLAY_STATE state)
     {
-        if (state == playState) return;
         playState = state;
         timer = 0;
         switch (state)
@@ -87,6 +89,19 @@ public class GameManager : MonoSingleton<GameManager>{
             case PLAY_STATE.PLAYER_SELECTION:
                 canvasPlay.SetActive(false);
                 playerSelection.SetActive(true);
+                pressStart[0].SetActive(true);
+                playerCameras[0].SetActive(true);
+                playerCameras[0].camera.cullingMask = 0;
+                pressStart[1].SetActive(true);
+                playerCameras[1].SetActive(true);
+                playerCameras[1].camera.cullingMask = 0;
+                pressStart[2].SetActive(true);
+                playerCameras[2].SetActive(true);
+                playerCameras[2].camera.cullingMask = 0;
+                pressStart[3].SetActive(true);
+                playerCameras[3].SetActive(true);
+                playerCameras[3].camera.cullingMask = 0;
+
                 break;
             case PLAY_STATE.PLAY:
                 canvasPlay.SetActive(true);
@@ -106,10 +121,10 @@ public class GameManager : MonoSingleton<GameManager>{
         switch(playState)
         {
             case PLAY_STATE.PLAYER_SELECTION:
-                if (Input.GetButtonDown("Start01"))
+                if (Input.GetButtonDown("Start01") && pressStart[0].activeInHierarchy )
                 {
-                    GameObject.Find("PressStartP1").SetActive(false);
-                    GameObject.Find("PlayerCamera01").camera.cullingMask = Camera.main.cullingMask;
+                    pressStart[0].SetActive(false);
+                    playerCameras[0].camera.cullingMask = Camera.main.cullingMask;
                     GameObject cat = GameObject.Instantiate(playerPrefab, new Vector3(3.39f, 0.325f, 6), Quaternion.Euler(0, 180, 0)) as GameObject;
                     cat.name = "Player01";
                     cat.GetComponent<PlayerController>().playerNumber = PlayerController.PLAYER_NUMBER.PLAYER_1;
@@ -117,10 +132,11 @@ public class GameManager : MonoSingleton<GameManager>{
                     cat.GetComponent<PlayerController>().enabled = false;
                     cat.transform.parent = levelContainer.transform;
                 }
-                else if (Input.GetButtonDown("Start02"))
+                else if (Input.GetButtonDown("Start02") && pressStart[1].activeInHierarchy)
                 {
-                    GameObject.Find("PressStartP2").SetActive(false);
-                    GameObject.Find("PlayerCamera02").camera.cullingMask = Camera.main.cullingMask;
+                    pressStart[1].SetActive(false);
+                    playerCameras[1].SetActive(true);
+                    playerCameras[1].camera.cullingMask = Camera.main.cullingMask;
                     GameObject cat = GameObject.Instantiate(playerPrefab, new Vector3(5.39f, 0.325f, 6), Quaternion.Euler(0, 180, 0)) as GameObject;
                     cat.GetComponent<PlayerController>().playerNumber = PlayerController.PLAYER_NUMBER.PLAYER_2;
                     cat.GetComponent<PlayerController>().Init();
@@ -129,10 +145,10 @@ public class GameManager : MonoSingleton<GameManager>{
                     cat.GetComponent<PlayerController>().enabled = false;
                     cat.transform.parent = levelContainer.transform;
                 }
-                else if (Input.GetButtonDown("Start03"))
+                else if (Input.GetButtonDown("Start03") && pressStart[2].activeInHierarchy)
                 {
-                    GameObject.Find("PressStartP3").SetActive(false);
-                    GameObject.Find("PlayerCamera03").camera.cullingMask = Camera.main.cullingMask;
+                    pressStart[2].SetActive(false);
+                    playerCameras[2].camera.cullingMask = Camera.main.cullingMask;
                     GameObject cat = GameObject.Instantiate(playerPrefab, new Vector3(7.39f, 0.325f, 6), Quaternion.Euler(0, 180, 0)) as GameObject;
                     cat.GetComponent<PlayerController>().playerNumber = PlayerController.PLAYER_NUMBER.PLAYER_3;
                     cat.GetComponent<PlayerController>().Init();
@@ -141,10 +157,10 @@ public class GameManager : MonoSingleton<GameManager>{
                     cat.GetComponent<PlayerController>().enabled = false;
                     cat.transform.parent = levelContainer.transform;
                 }
-                else if (Input.GetButtonDown("Start04"))
+                else if (Input.GetButtonDown("Start04") && pressStart[3].activeInHierarchy)
                 {
-                    GameObject.Find("PressStartP4").SetActive(false);
-                    GameObject.Find("PlayerCamera04").camera.cullingMask = Camera.main.cullingMask;
+                    pressStart[3].SetActive(false);
+                    playerCameras[3].camera.cullingMask = Camera.main.cullingMask;
                     GameObject cat = GameObject.Instantiate(playerPrefab, new Vector3(9.39f, 0.325f, 6), Quaternion.Euler(0, 180, 0)) as GameObject;
                     cat.GetComponent<PlayerController>().playerNumber = PlayerController.PLAYER_NUMBER.PLAYER_4;
                     cat.GetComponent<PlayerController>().Init();

@@ -47,6 +47,8 @@ public class Cell : MonoBehaviour {
                     Boulder();
                 break;
             case CELL_STATE.BOULDER:
+                if (timerNow >= timerObjective)
+                    Clear();
                 break;
         }
 

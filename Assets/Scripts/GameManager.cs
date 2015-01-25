@@ -21,22 +21,28 @@ public class GameManager : MonoSingleton<GameManager>{
     };
 
     public PLAY_STATE playState = PLAY_STATE.PLAYER_SELECTION;
-    public Score scores; 
+
+    [Header("Map")]
 	public Texture2D mapLayout;
 	public int levelSize = 13;
 	private Cell[,] cells;
 	public GameObject cellPrefab;
     private GameObject cellContainer;
+
+    [Header("Game")]
+    public Score scores;
     public GameObject playerSelection;
     public GameObject canvasPlay;
     public GameObject playerPrefab;
     public GameObject[] players;
-    public bool startCountdown = false;
-    public float timer = 0;
-
     [HideInInspector]
     public GameObject levelContainer;
 
+    [Header("Times")]
+    public bool startCountdown = false;
+    public float timer = 0;
+    public float startCountdownTime = 10.0f;
+    public float roundTime = 60.0f;
     public float eventTimer = 3.0f;
     public float eventTimerNow = 0.0f;
 
@@ -131,7 +137,7 @@ public class GameManager : MonoSingleton<GameManager>{
                 {
                     startCountdown = true;
                     timer += Time.deltaTime;
-                    if (timer >= 10.0f)
+                    if (timer >= startCountdownTime)
                     {
                         playState = PLAY_STATE.PLAY;
                         foreach (GameObject g in players) g.GetComponent<PlayerController>().enabled = true;
@@ -155,7 +161,7 @@ public class GameManager : MonoSingleton<GameManager>{
                 }
                 eventTimerNow += Time.deltaTime;
                 timer += Time.deltaTime;
-                if (timer >= 60.0f)
+                if (timer >= roundTime)
                 {
                     playState = PLAY_STATE.END;
                 }
@@ -212,7 +218,7 @@ public class GameManager : MonoSingleton<GameManager>{
     void DrawMapFromTexture()
     {
         levelSize = mapLayout.width;
-        Color32[] colors = mapLayout.GetPixels32();
+        //Color32[] colors = mapLayout.GetPixels32();
         
         for (int i = 0; i < mapLayout.width; i++)
         {

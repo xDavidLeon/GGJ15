@@ -31,7 +31,7 @@ public class Rock : MonoBehaviour {
 
     void Fallen()
     {
-        tag = "Untagged";
+        tag = "Obstacle";
         fallen = true;
     }
 }

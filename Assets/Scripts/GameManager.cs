@@ -39,6 +39,13 @@ public class GameManager : MonoSingleton<GameManager>{
     [HideInInspector]
     public GameObject levelContainer;
 
+    public GameObject volcanoPartA;
+    public GameObject volcanoPartB;
+    public GameObject volcanoPartC;
+    public GameObject volcanoPartD;
+    public bool startPart2 = false, startPart3 = false;
+    public float lavaVelocity = 10f;
+
     [Header("Times")]
     public float timer = 0;
     public float startCountdownTime = 10.0f;
